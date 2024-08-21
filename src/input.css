@@ -1,0 +1,240 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    @font-face {
+        font-family: 'Basis';
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url(./fonts/Basis-Grotesque-Regular.woff2) format('woff2');
+    }
+
+    @font-face {
+        font-family: 'Basis';
+        font-style: normal;
+        font-weight: 500;
+        font-display: swap;
+        src: url(./fonts/Basis-Grotesque-Medium.woff2) format('woff2');
+    }
+
+    @font-face {
+        font-family: 'Basis';
+        font-style: normal;
+        font-weight: 700;
+        font-display: swap;
+        src: url(./fonts/Basis-Grotesque-Bold.woff2) format('woff2');
+    }
+
+    @font-face {
+        font-family: 'Basis';
+        font-style: normal;
+        font-weight: 900;
+        font-display: swap;
+        src: url(./fonts/Basis-Grotesque-Black.woff2) format('woff2');
+    }
+
+    .header-l {
+        font-family: "Basis", "Inter", system-ui, sans-serif;
+        font-size: 1.75rem;
+        font-weight: 700;
+        line-height: 2rem;
+        letter-spacing: -0.025em;
+    }
+
+    .header-m {
+        font-family: "Basis", "Inter", system-ui, sans-serif;
+        font-size: 1.3rem;
+        font-weight: 700;
+        line-height: 1.75rem;
+        letter-spacing: -0.025em;
+    }
+
+    .header-xs {
+        font-family: "Basis", "Inter", system-ui, sans-serif;
+        font-size: 1rem;
+        font-weight: 700;
+        line-height: 1.25rem;
+        letter-spacing: -0.0125em;
+    }
+
+    .body {
+        font-family: "Basis", "Inter", system-ui, sans-serif;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5rem;
+    }
+
+    .body-dense {
+        font-family: "Basis", "Inter", system-ui, sans-serif;
+        font-size: 0.875rem;
+        font-weight: 400;
+        line-height: 1.25rem;
+    }
+
+    .label-xl {
+        font-family: "Basis", "Inter", system-ui, sans-serif;
+        font-size: 1rem;
+        font-weight: 700;
+        line-height: 1.5rem;
+    }
+
+    .label-m {
+        font-family: "Basis", "Inter", system-ui, sans-serif;
+        font-size: 0.875rem;
+        font-weight: 700;
+        line-height: 1rem;
+        letter-spacing: 0.025em;
+    }
+
+    .label-s {
+        font-family: "Basis", "Inter", system-ui, sans-serif;
+        font-size: 0.875rem;
+        font-weight: 500;
+        line-height: 1rem;
+        /* letter-spacing: 0.0125em; */
+    }
+
+    .label-xs {
+        font-family: "Basis", "Inter", system-ui, sans-serif;
+        font-size: 0.75rem;
+        font-weight: 700;
+        line-height: 1rem;
+        letter-spacing: 0.05em;
+    }
+
+    .caption {
+        font-family: "Basis", "Inter", system-ui, sans-serif;
+        font-size: 0.75rem;
+        font-weight: 500;
+        line-height: 1rem;
+    }
+
+    /* Text Colors */
+    .text-01 {
+        @apply text-grey-900 dark:text-grey-75;
+        @apply fill-grey-900 dark:fill-grey-75
+    }
+
+    .text-02 {
+        @apply text-grey-600 dark:text-grey-300;
+    }
+
+    .text-03 {
+        @apply text-grey-400 dark:text-grey-500;
+    }
+
+    .text-info {
+        @apply text-blue-600 dark:text-blue-300;
+    }
+
+    /* Interactive Colors */
+    .interactive-text {
+        @apply text-blurple-400 dark:text-blurpleA-300;
+    }
+
+    .interactive-01 {
+        @apply bg-blurple-400 dark:bg-blurpleA-400;
+    }
+
+    .interactive-transparent {
+        @apply bg-transparent dark:bg-transparent;
+    }
+
+    /* Surface colors */
+    .screen-01 {
+        @apply bg-white dark:bg-grey-950;
+    }
+
+    .screen-02 {
+        @apply bg-grey-50 dark:bg-grey-900;
+    }
+
+    .surface-01 {
+        @apply bg-white dark:bg-grey-850;
+    }
+
+    .surface-02 {
+        @apply bg-grey-50 dark:bg-grey-800;
+    }
+
+    .surface-03 {
+        @apply bg-grey-100 dark:bg-grey-750;
+    }
+
+    .surface-sticky {
+        @apply bg-white dark:bg-grey-900;
+    }
+
+    .surface-info {
+        @apply bg-blue-75 dark:bg-blue-850;
+    }
+
+    /* Border Colors */
+    .stroke-01 {
+        @apply border-grey-100 dark:border-grey-750;
+    }
+
+    .stroke-02 {
+        @apply border-grey-900 dark:border-grey-75;
+    }
+
+    .interactive-stroke {
+        @apply border-blurple-400 dark:border-blurpleA-300;
+    }
+
+    .interactive-stroke-02 {
+        @apply border-grey-200 dark:border-grey-700;
+    }
+
+    /* Disabled Colors */
+    .interactive-disabled {
+        @apply bg-grey-100 dark:bg-grey-800;
+    }
+
+    .interactive-fg-disabled {
+        @apply text-grey-400 dark:text-grey-400;
+        @apply fill-grey-400 dark:fill-grey-400;
+    }
+
+    /* Spot Illustration Colors */
+    .spot-bg-success {
+        @apply bg-green-100 dark:bg-grey-700;
+    }
+
+    .spot-bg-blurple {
+        @apply bg-blurple-100 dark:bg-grey-700
+    }
+
+    /* Component Classes */
+    .spinner-track {
+        @apply border-grey-100 dark:border-grey-750;
+        @apply border-4;
+    }
+
+    .spinner-fill {
+        @apply border-l-blurple-400 dark:border-l-blurpleA-300
+    }
+
+    .spinner-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        width: 100%;
+    }
+
+    .spinner {
+        /* Change this color to customize the spinner */
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+    }
+
+    .spot-bg {
+        width: 90%;
+        height: 90%;
+    }
+}
