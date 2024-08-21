@@ -222,6 +222,7 @@ export default function ImageMigrator() {
                   darkSpotIllustration={<SpotSparkleDark />}
                 />
                 <p class="text-center body-dense">Select frames to scan them for Aspect Ratio instances. If nothing is selected, the current page will be scanned.</p>
+                <p class="text-center body-dense">Large pages may take longer to scan.</p>
                 <Button
                   label="Scan for instances"
                   onClick={findAspectRatioInstances}
