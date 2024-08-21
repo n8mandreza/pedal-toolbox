@@ -26,13 +26,14 @@
     "editorType": [
       "figma"
     ],
-    "id": "pedaltoolbox",
+    "id": "1408193921522734156",
     "name": "Pedal Toolbox",
     "main": "src/main.ts",
     "ui": "src/ui.tsx",
     "permissions": [
       "teamlibrary"
     ],
+    "networkAccess": {"allowedDomains": ["none"]},
     "documentAccess": "dynamic-page"
   }
 }
