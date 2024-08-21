@@ -26,9 +26,7 @@ $ npm run build
 
 This will generate a [`manifest.json`](https://figma.com/plugin-docs/manifest/)
 file and a `build/` directory containing the JavaScript bundle(s) for the
-plugin.
-
-*To edit the `manifest.json` file, update the corresponding fields in
+plugin. To edit the `manifest.json` file, update the corresponding fields in
 `package.json`.
 
 To watch for code changes and rebuild the plugin automatically:
