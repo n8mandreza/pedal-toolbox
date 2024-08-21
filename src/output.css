@@ -446,56 +446,8 @@ video {
   display: none;
 }
 
-@font-face {
-  font-family: 'Basis';
-
-  font-style: normal;
-
-  font-weight: 400;
-
-  font-display: swap;
-
-  src: url(./fonts/Basis-Grotesque-Regular.woff2) format('woff2');
-}
-
-@font-face {
-  font-family: 'Basis';
-
-  font-style: normal;
-
-  font-weight: 500;
-
-  font-display: swap;
-
-  src: url(./fonts/Basis-Grotesque-Medium.woff2) format('woff2');
-}
-
-@font-face {
-  font-family: 'Basis';
-
-  font-style: normal;
-
-  font-weight: 700;
-
-  font-display: swap;
-
-  src: url(./fonts/Basis-Grotesque-Bold.woff2) format('woff2');
-}
-
-@font-face {
-  font-family: 'Basis';
-
-  font-style: normal;
-
-  font-weight: 900;
-
-  font-display: swap;
-
-  src: url(./fonts/Basis-Grotesque-Black.woff2) format('woff2');
-}
-
 .header-l {
-  font-family: "Basis", "Inter", system-ui, sans-serif;
+  font-family: system-ui, "Inter", sans-serif;
   font-size: 1.75rem;
   font-weight: 700;
   line-height: 2rem;
@@ -503,7 +455,7 @@ video {
 }
 
 .header-m {
-  font-family: "Basis", "Inter", system-ui, sans-serif;
+  font-family: system-ui, "Inter", sans-serif;
   font-size: 1.3rem;
   font-weight: 700;
   line-height: 1.75rem;
@@ -511,7 +463,7 @@ video {
 }
 
 .header-xs {
-  font-family: "Basis", "Inter", system-ui, sans-serif;
+  font-family: system-ui, "Inter", sans-serif;
   font-size: 1rem;
   font-weight: 700;
   line-height: 1.25rem;
@@ -519,28 +471,28 @@ video {
 }
 
 .body {
-  font-family: "Basis", "Inter", system-ui, sans-serif;
+  font-family: system-ui, "Inter", sans-serif;
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5rem;
 }
 
 .body-dense {
-  font-family: "Basis", "Inter", system-ui, sans-serif;
+  font-family: system-ui, "Inter", sans-serif;
   font-size: 0.875rem;
   font-weight: 400;
   line-height: 1.25rem;
 }
 
 .label-xl {
-  font-family: "Basis", "Inter", system-ui, sans-serif;
+  font-family: system-ui, "Inter", sans-serif;
   font-size: 1rem;
   font-weight: 700;
   line-height: 1.5rem;
 }
 
 .label-m {
-  font-family: "Basis", "Inter", system-ui, sans-serif;
+  font-family: system-ui, "Inter", sans-serif;
   font-size: 0.875rem;
   font-weight: 700;
   line-height: 1rem;
@@ -548,7 +500,7 @@ video {
 }
 
 .label-s {
-  font-family: "Basis", "Inter", system-ui, sans-serif;
+  font-family: system-ui, "Inter", sans-serif;
   font-size: 0.875rem;
   font-weight: 500;
   line-height: 1rem;
@@ -556,7 +508,7 @@ video {
 }
 
 .label-xs {
-  font-family: "Basis", "Inter", system-ui, sans-serif;
+  font-family: system-ui, "Inter", sans-serif;
   font-size: 0.75rem;
   font-weight: 700;
   line-height: 1rem;
@@ -564,7 +516,7 @@ video {
 }
 
 .caption {
-  font-family: "Basis", "Inter", system-ui, sans-serif;
+  font-family: system-ui, "Inter", sans-serif;
   font-size: 0.75rem;
   font-weight: 500;
   line-height: 1rem;

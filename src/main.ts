@@ -2,6 +2,7 @@ import { on, showUI } from '@create-figma-plugin/utilities'
 import { ResizeWindowHandler } from './types';
 import { createDate, createNumber, createTime } from './utils/localizerFunctions';
 import { handleAspectRatioInstances, replaceAllInstances } from './utils/migratorFunctions';
+import { applyImagesToSelectedNodes } from './utils/generatorFunctions'
 
 export default function () {
   // Set up UI
@@ -18,6 +19,8 @@ export default function () {
       figma.ui.resize(width, height)
     }
   )
+
+  on('GENERATE_VEHICLES', applyImagesToSelectedNodes)
 
   on('CREATE-DATE', createDate)
   on('CREATE-TIME', createTime)
