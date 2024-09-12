@@ -43,4 +43,5 @@ export default function () {
   });
 
   on('FIND_ISSUES', handleLinting);
+  // on('UPDATE_NODE_PROPERTY', updateNode);
 }

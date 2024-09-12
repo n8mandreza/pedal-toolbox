@@ -38,6 +38,7 @@ export default function Linter() {
       console.log('Received in UI:', issues); // Check received data
       if (Array.isArray(issues)) {
         setIssues(issues);
+        console.log(issues)
       } else {
         console.error('Data received is not an array:', issues);
         setIssues([]); // Fallback to setting an empty array
@@ -47,6 +48,17 @@ export default function Linter() {
 
     return () => {
       unsubscribeInstances();
+    };
+  }, []);
+
+  // Side effect to update node list if an item is updated
+  useEffect(() => {
+    const unsubscribe = on('UPDATE_ISSUE_LIST', ({ nodeId, issueType }) => {
+      setIssues(currentIssues => currentIssues.filter(issue => issue.node.id !== nodeId && issue.type !== issueType));
+    });
+
+    return () => {
+      unsubscribe();
     };
   }, []);
 
@@ -84,9 +96,16 @@ export default function Linter() {
               <NodeListItem 
                 node={issue.node} 
                 issue={issue.message} 
-                property={issue.value}
+                property={issue.value ? `Using: ${issue.value}` : null}
+                suggestion={issue.suggested ? `Suggested: ${issue.suggested}` : null}
                 selected={issue.node.id === selectedNode?.id}
                 onClick={() => handleNodeClick(issue.node)}
+                // actionLabel={issue.suggested ? 'Update' : null}
+                // action={issue.suggested ? () => emit('UPDATE_NODE_PROPERTY', {
+                //   nodeId: issue.node.id, 
+                //   issueType: issue.type, 
+                //   update: issue.suggested
+                // }) : undefined}
               />
             ))}
           </div>

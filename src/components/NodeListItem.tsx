@@ -5,16 +5,18 @@ import { h } from "preact";
 interface INodeListItem {
   node: ComponentNode | FrameNode | GroupNode | InstanceNode | LineNode | TextNode | VectorNode;
   property?: string | boolean | null;
+  suggestion?: string | boolean | null;
   issue?: string | null;
   selected?: boolean;
   actionLabel?: string | null;
   onClick: () => void;
-  action?: () => void | null;
+  action?: () => void;
 }
 
 export default function NodeListItem({
   node, 
   property = null, 
+  suggestion = null,
   issue = null, 
   selected = false, 
   actionLabel = null,
@@ -66,6 +68,12 @@ export default function NodeListItem({
             {property}
           </p>
         ) : null }
+
+        {suggestion ? (
+          <p class="body-dense text-02 w-full">
+            {suggestion}
+          </p>
+        ) : null}
       </div>
 
       {action && actionLabel && (
