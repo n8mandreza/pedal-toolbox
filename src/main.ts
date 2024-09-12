@@ -1,8 +1,9 @@
 import { on, showUI } from '@create-figma-plugin/utilities'
 import { ResizeWindowHandler } from './types';
 import { createDate, createNumber, createTime } from './utils/localizerFunctions';
-import { handleAspectRatioInstances, replaceAllInstances } from './utils/migratorFunctions';
+import { handleComponentSetInstances, replaceAllInstances, replaceInstance } from './utils/migratorFunctions';
 import { applyImagesToSelectedNodes } from './utils/generatorFunctions'
+import { handleLinting } from './utils/lintingFunctions';
 
 export default function () {
   // Set up UI
@@ -26,17 +27,20 @@ export default function () {
   on('CREATE-TIME', createTime)
   on('CREATE-NUMBER', createNumber)
 
-  on('FIND_ASPECT_RATIO_INSTANCES', handleAspectRatioInstances);
+  on('FIND_COMPONENT_INSTANCES', handleComponentSetInstances);
+  on('REPLACE_INSTANCE', replaceInstance);
   on('REPLACE_ALL_INSTANCES', replaceAllInstances);
 
-  on('SELECT_AND_CENTER_INSTANCE', async ({ id }) => {
+  on('SELECT_AND_CENTER_NODE', async ({ id }) => {
     const node = await figma.getNodeByIdAsync(id);
     // Check if the node is an InstanceNode
-    if (node && node.type === 'INSTANCE') {
+    if (node && node.type !== 'PAGE' && node.type !== 'DOCUMENT') {
       figma.currentPage.selection = [node];
       figma.viewport.scrollAndZoomIntoView([node]);
     } else {
-      console.error('Node is not an instance or does not exist');
+      console.error('Node is not valid or does not exist');
     }
   });
+
+  on('FIND_ISSUES', handleLinting);
 }

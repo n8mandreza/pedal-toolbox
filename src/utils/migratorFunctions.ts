@@ -1,4 +1,5 @@
 import { emit } from "@create-figma-plugin/utilities";
+import { IInstanceSwap } from "../types";
 
 // Find component set instances and collect detailed information
 export async function findComponentSetInstances(componentSetKey: string): Promise<any[]> {
@@ -18,6 +19,7 @@ export async function findComponentSetInstances(componentSetKey: string): Promis
           instances.push({
             id: node.id,
             name: node.name,
+            type: node.type,
             componentProperties: node.componentProperties
           });
         }
@@ -37,8 +39,8 @@ export async function findComponentSetInstances(componentSetKey: string): Promis
   return instances;
 }
 
-// Find and send AspectRatio instances
-export async function handleAspectRatioInstances(componentSetKey: string) {
+// Find and send specified component set instances
+export async function handleComponentSetInstances(componentSetKey: string) {
   const instances = await findComponentSetInstances(componentSetKey);
   console.log('Emitting instances:', instances);
 
@@ -50,9 +52,25 @@ export async function handleAspectRatioInstances(componentSetKey: string) {
   }
 }
 
-// Replace found instances with new component
+// Replace single instance with new component
+export async function replaceInstance({ instanceId, newComponentKey }: IInstanceSwap) {
+  const instance = await figma.getNodeByIdAsync(instanceId);
+  if (instance && instance.type === 'INSTANCE') {
+    const newComponent = await figma.importComponentByKeyAsync(newComponentKey);
+    if (newComponent) {
+      instance.swapComponent(newComponent);
+      emit('UPDATE_INSTANCE_LIST', { instanceId });
+    } else {
+      console.error(`Failed to import component with key: ${newComponentKey}.`)
+    }
+  } else {
+    console.error(`Instance not found or is not of type INSTANCE: ${instanceId}.`)
+  }
+}
+
+// Replace all instances at once with new component
 export async function replaceAllInstances({ replacements }: any) {
-  const promises = replacements.map(async ({ instanceId, newComponentKey }: {instanceId: string, newComponentKey: string}) => {
+  const promises = replacements.map(async ({ instanceId, newComponentKey }: IInstanceSwap) => {
     const instance = await figma.getNodeByIdAsync(instanceId);
     if (instance && instance.type === 'INSTANCE') {
       const newComponent = await figma.importComponentByKeyAsync(newComponentKey);

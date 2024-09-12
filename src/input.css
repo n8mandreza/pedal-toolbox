@@ -52,7 +52,7 @@
         font-family: system-ui, "Inter", sans-serif;
         font-size: 0.875rem;
         font-weight: 700;
-        line-height: 1rem;
+        line-height: 1.25rem;
         letter-spacing: 0.025em;
     }
 
@@ -93,6 +93,10 @@
         @apply text-grey-400 dark:text-grey-500;
     }
 
+    .text-inverse {
+        @apply text-white dark:text-grey-900;
+    }
+
     .text-info {
         @apply text-blue-600 dark:text-blue-300;
     }
@@ -104,6 +108,10 @@
 
     .interactive-01 {
         @apply bg-blurple-400 dark:bg-blurpleA-400;
+    }
+
+    .interactive-02 {
+        @apply bg-grey-700 dark:bg-grey-75;
     }
 
     .interactive-transparent {
@@ -139,6 +147,10 @@
         @apply bg-blue-75 dark:bg-blue-850;
     }
 
+    .surface-alert {
+        @apply bg-yellow-75 dark:bg-yellow-900;
+    }
+
     /* Border Colors */
     .stroke-01 {
         @apply border-grey-100 dark:border-grey-750;
@@ -156,6 +168,10 @@
         @apply border-grey-200 dark:border-grey-700;
     }
 
+    .interactive-stroke-02-selected {
+        @apply border-grey-700 dark:border-grey-75;
+    }
+
     /* Disabled Colors */
     .interactive-disabled {
         @apply bg-grey-100 dark:bg-grey-800;
@@ -164,6 +180,11 @@
     .interactive-fg-disabled {
         @apply text-grey-400 dark:text-grey-400;
         @apply fill-grey-400 dark:fill-grey-400;
+    }
+
+    /* Icon Colors */
+    .icon-alert {
+        @apply fill-yellow-400 dark:fill-yellow-400;
     }
 
     /* Spot Illustration Colors */

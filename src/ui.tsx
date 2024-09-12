@@ -9,10 +9,13 @@ import CurrencyLocalizer from './components/localizers/CurrencyLocalizer'
 import DateLocalizer from './components/localizers/DateLocalizer'
 import NumberLocalizer from './components/localizers/NumberLocalizer'
 import TimeLocalizer from './components/localizers/TimeLocalizer'
-import ImageMigrator from './components/ImageMigrator'
+import ImageMigrator from './components/migrators/ImageMigrator'
+import AlertMigrator from './components/migrators/AlertMigrator'
+import Linter from './components/Linter'
+import AlertBannerMigrator from './components/migrators/AlertBannerMigrator'
 
 function Plugin () {
-  const [currentView, setCurrentView] = useState('currencyLocalizer')
+  const [currentView, setCurrentView] = useState('linter')
   
   function onWindowResize(windowSize: { width: number; height: number }) {
     emit<ResizeWindowHandler>('RESIZE_WINDOW', windowSize)
@@ -33,8 +36,6 @@ function Plugin () {
     switch (currentView) {
       // case 'vehicleImageGenerator':
       //   return <VehicleImageGenerator />;
-      case 'imageMigrator':
-        return <ImageMigrator />;
       case 'currencyLocalizer':
         return <CurrencyLocalizer />;
       case 'dateLocalizer':
@@ -43,19 +44,31 @@ function Plugin () {
         return <NumberLocalizer />;
       case 'timeLocalizer':
         return <TimeLocalizer />;
+      case 'imageMigrator':
+        return <ImageMigrator />;
+      case 'alertMigrator':
+        return <AlertMigrator />;
+      case 'alertBannerMigrator':
+        return <AlertBannerMigrator />
+      case 'linter':
+        return <Linter />;
       default:
-        return <DateLocalizer />;
+        return <Linter />;
     }
   }
   
   return (
     <div class="w-screen h-screen flex body overflow-y-scroll text-base screen-01 text-01">
       <div class="flex flex-col justify-between flex-shrink-0 w-48 px-2 py-2 overflow-scroll border-r border-solid surface-sticky stroke-01">
-        <div class="flex flex-col gap-3">
+        <div class="flex flex-col gap-2">
           {/* <p class="text-03 label-s p-2">Generators</p>
           <TabItem label='Vehicles' selected={currentView === 'vehicleImageGenerator'} onClick={() => handleViewChange('vehicleImageGenerator')} /> */}
           <div class="flex flex-col">
-            <p class="text-03 label-s p-2">Localizers</p>
+            <TabItem label='Linter' badge='beta' selected={currentView === 'linter'} onClick={() => handleViewChange('linter')} />
+          </div>
+
+          <div class="flex flex-col">
+            <p class="text-03 label-s py-2 px-1">Localizers</p>
             <TabItem label='Currency' selected={currentView === 'currencyLocalizer'} onClick={() => handleViewChange('currencyLocalizer')} />
             <TabItem label='Date' selected={currentView === 'dateLocalizer'} onClick={() => handleViewChange('dateLocalizer')} />
             <TabItem label='Number' selected={currentView === 'numberLocalizer'} onClick={() => handleViewChange('numberLocalizer')} />
@@ -63,8 +76,10 @@ function Plugin () {
           </div>
 
           <div class="flex flex-col">
-            <p class="text-03 label-s p-2">Migrators</p>
-            <TabItem label='Image migrator' badge='new' selected={currentView === 'imageMigrator'} onClick={() => handleViewChange('imageMigrator')} />
+            <p class="text-03 label-s py-2 px-1">Migrators</p>
+            <TabItem label='AspectRatio → Image' selected={currentView === 'imageMigrator'} onClick={() => handleViewChange('imageMigrator')} />
+            <TabItem label='Alert (Web)' badge='new' selected={currentView === 'alertMigrator'} onClick={() => handleViewChange('alertMigrator')} />
+            <TabItem label='AlertBanner (Web)' badge='new' selected={currentView === 'alertBannerMigrator'} onClick={() => handleViewChange('alertBannerMigrator')} />
           </div>
         </div>
       </div>

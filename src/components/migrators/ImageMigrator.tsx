@@ -1,25 +1,18 @@
 import { h, Fragment } from "preact"
 import { emit, on } from "@create-figma-plugin/utilities"
-import Button from "./buttons/Button"
+import Button from "../buttons/Button"
 import { useEffect, useState } from "preact/hooks"
-import Select from "./inputs/Select";
-import SpotIllustration from "./SpotIllustration";
-import SpotSparkleLight from "../illustrations/SpotSparkleLight";
-import SpotSparkleDark from "../illustrations/SpotSparkleDark";
-import SpotThumbsUpSuccess from "../illustrations/SpotThumbsUpSuccess";
-import ProgressIndicator from "./ProgressIndicator";
-import { Diamond } from "lucide-preact";
+import Select from "../inputs/Select";
+import SpotIllustration from "../SpotIllustration";
+import SpotSparkleLight from "../../illustrations/SpotSparkleLight";
+import SpotSparkleDark from "../../illustrations/SpotSparkleDark";
+import SpotThumbsUpSuccess from "../../illustrations/SpotThumbsUpSuccess";
+import ProgressIndicator from "../ProgressIndicator";
+import NodeListItem from "../NodeListItem";
+import HeaderBar from "../HeaderBar";
 
 // Aspect Ratio (ComponentSetNode) key: d5e459bec5a66d106c1350180cb0f8b038defc03
 // Aspect Ratio=1:1 key: b1df749ba02102cf0255c9b34c18809cab8cfbde
-
-interface IInstanceDetails {
-  id: string;
-  name: string;
-  componentName: string;
-  componentId: string;
-  componentProperties: any;
-}
 
 interface IFeedbackMessage {
   id: string;
@@ -28,7 +21,8 @@ interface IFeedbackMessage {
 }
 
 export default function ImageMigrator() {
-  const [instances, setInstances] = useState<IInstanceDetails[]>([]);
+  const [instances, setInstances] = useState<InstanceNode[]>([]);
+  const [selectedInstance, setSelectedInstance] = useState<InstanceNode | null>(null);
   const [platform, setPlatform] = useState('Apple');
   const [feedback, setFeedback] = useState <IFeedbackMessage[]>([]);
   const [isScanning, setIsScanning] = useState(false);
@@ -84,14 +78,14 @@ export default function ImageMigrator() {
   // Find instances of all variants of Aspect Ratio
   function findAspectRatioInstances() {
     setIsScanning(true); // Start scanning
-    emit('FIND_ASPECT_RATIO_INSTANCES', 'd5e459bec5a66d106c1350180cb0f8b038defc03')
+    emit('FIND_COMPONENT_INSTANCES', 'd5e459bec5a66d106c1350180cb0f8b038defc03')
   }
 
   function replaceAspectRatioInstances() {
     console.log('Current instances at migration:', instances);
     if (Array.isArray(instances) && instances.length > 0) {
       const replacements = instances.map(instance => {
-        const aspectRatio = instance.componentProperties['Aspect Ratio'] ? instance.componentProperties['Aspect Ratio'].value : '1:1';
+        const aspectRatio: any = instance.componentProperties['Aspect Ratio'] ? instance.componentProperties['Aspect Ratio'].value : '1:1';
         return {
           instanceId: instance.id,
           newComponentKey: getComponentKey(platform, aspectRatio)
@@ -102,6 +96,17 @@ export default function ImageMigrator() {
     } else {
       console.error('Attempted to migrate with invalid data:', instances);
     }
+  }
+
+  function handleNodeClick(instance: InstanceNode) {
+    setSelectedInstance(instance);  // Set the selected instance state
+    emit('SELECT_AND_CENTER_NODE', { id: instance.id });  // Emit an event to center on this node
+  }
+
+  function handleClearAndReset() {
+    setSelectedInstance(null)
+    setFeedback([])
+    setInstances([])
   }
 
   // Side effect to set instances when found
@@ -136,11 +141,7 @@ export default function ImageMigrator() {
 
   return (
     <div class="w-full h-full flex flex-col">
-      <div class="p-4 w-full flex gap-3">
-        <h1 class="header-xs">
-          Migrate Aspect Ratio to PDL-Image
-        </h1>
-      </div>
+      <HeaderBar title='Migrate Aspect Ratio to PDL-Image' />
 
       {feedback.length > 0 ? (
         // Case 3: Feedback is present
@@ -148,7 +149,7 @@ export default function ImageMigrator() {
           <div class="flex gap-3">
             <p class="body-dense text-02 w-full">{instances.length} instances found</p>
 
-            <button class="hover:opacity-80 label-s" onClick={() => setFeedback([])}>
+            <button class="hover:opacity-80 label-s" onClick={() => handleClearAndReset}>
               Reset
             </button>
           </div>
@@ -170,27 +171,19 @@ export default function ImageMigrator() {
             <div class="flex gap-3">
               <p class="body-dense text-02 w-full">{instances.length} instances found</p>
 
-              <button class="hover:opacity-80 label-s" onClick={() => setInstances([])}>
+                <button class="hover:opacity-80 label-s" onClick={() => handleClearAndReset}>
                 Clear
               </button>
             </div>
 
             {instances.map(instance => (
-              <div key={instance.id} class="flex gap-3 surface-01 stroke-01 border border-solid rounded-m p-4">
-                <Diamond size={20} strokeWidth={1.25} />
-                <div class="flex flex-col gap-1 w-full">
-                  <p class="w-full body-dense">{instance.name}</p>
-                  <p class="text-xs text-02 w-full">
-                    {instance.componentProperties['Aspect Ratio'] ? instance.componentProperties['Aspect Ratio'].value : 'No Aspect Ratio'}
-                  </p>
-                </div>
-                <button
-                  class="hover:opacity-80 label-s"
-                  onClick={() => emit('SELECT_AND_CENTER_INSTANCE', { id: instance.id })}
-                >
-                  Select
-                </button>
-              </div>
+              <NodeListItem 
+                node={instance} 
+                property={instance.componentProperties['Aspect Ratio'].value} 
+                selected={instance.id === selectedInstance?.id}
+                actionLabel={'Update'}
+                onClick={() => handleNodeClick(instance)}
+              />
             ))}
           </div>
           <div class="flex flex-col p-4 gap-3 surface-sticky border-t border-solid stroke-01">
@@ -210,7 +203,7 @@ export default function ImageMigrator() {
         </Fragment>
       ) : (
         // Case 1: No instances and no feedback
-        <div class="w-full h-full px-4 pb-4">
+        <div class="w-full h-full p-4">
           <div class="flex flex-col w-full h-full items-center justify-center screen-02 rounded-m gap-4 p-4">
             {isScanning ? (
               <ProgressIndicator />

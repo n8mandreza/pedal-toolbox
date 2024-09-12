@@ -1,406 +1,163 @@
-// // Linting functions
+// Linting functions
+import { emit } from "@create-figma-plugin/utilities"
 
-// interface IErrorObject {
-//     node: ComponentNode | InstanceNode | FrameNode
-//     type: string
-//     message: string
-//     value?: string | undefined
-// }
+interface ISimplifiedNode {
+  id: string;
+  name: string;
+  type: string;
+}
 
-// // Generic function for creating an error object to pass to the app.
-// export function createErrorObject({node, type, message, value}: IErrorObject) {
-//     let error = {
-//         node: "",
-//         type: "",
-//         message: "",
-//         value: ""
-//     };
+interface IErrorObject {
+  node: ISimplifiedNode
+  type: string
+  message: string
+  value?: string | undefined
+  update?: () => void
+}
 
-//     error.node = node;
-//     error.message = message;
-//     error.type = type;
+// Generic function for creating an error object to pass to the app.
+export function createErrorObject({ node, type, message, value }: IErrorObject) {
+  return {
+    node: {
+      id: node.id,
+      name: node.name,
+      type: node.type
+    },
+    type: type,
+    message: message,
+    value: value || ""
+  };
+}
 
-//     if (value !== undefined) {
-//         error.value = value;
-//     }
+const rgbToHex = (r: number, g: number, b: number): string => {
+  const toHex = (x: number): string => {
+    const hex = Math.round(x * 255).toString(16);
+    return hex.length === 1 ? '0' + hex : hex;
+  };
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+};
 
-//     return error;
-// }
+function isAllowedNodeType(node: PageNode | SceneNode): node is ComponentNode | FrameNode | GroupNode | InstanceNode | LineNode | TextNode | VectorNode {
+  return ['COMPONENT', 'FRAME', 'GROUP', 'INSTANCE', 'LINE', 'TEXT', 'VECTOR'].includes(node.type)
+}
 
-// // Determine a node's fills
-// export function determineFill(fills: any[]) {
-//     let fillValues: any[] = [];
+// Components to ignore
+async function isIgnoredComponent(node: InstanceNode): Promise<boolean> {
+  const ignoredComponents = [
+    'a825037de1d179b0b669312d8a2f1c5f14e33eac',
+    'b97240f6a0f5a6800774de0f2b9da10367e24fa0',
+    'cd1bb2c50bcca112c4ed727763c862c63488f7e4'
+  ];
 
-//     fills.forEach(fill => {
-//         if (fill.type === "SOLID") {
-//             let rgbObj = convertColor(fill.color);
-//             fillValues.push(RGBToHex(rgbObj["r"], rgbObj["g"], rgbObj["b"]));
-//         } else if (fill.type === "IMAGE") {
-//             fillValues.push("Image - " + fill.imageHash);
-//         } else {
-//             const gradientValues: string[] = [];
-//             fill.gradientStops.forEach((gradientStops: { color: any; }) => {
-//                 let gradientColorObject = convertColor(gradientStops.color);
-//                 gradientValues.push(
-//                     RGBToHex(
-//                         gradientColorObject["r"],
-//                         gradientColorObject["g"],
-//                         gradientColorObject["b"]
-//                     )
-//                 );
-//             });
-//             let gradientValueString = gradientValues.toString();
-//             fillValues.push(`${fill.type} ${gradientValueString}`);
-//         }
-//     });
+  if (node.getMainComponentAsync) {
+    const mainComponent = await node.getMainComponentAsync();
+    if (mainComponent) {
+      return ignoredComponents.includes(mainComponent.key);
+    }
+  }
+  return false;
+}
 
-//     return fillValues[0];
-// }
+async function lintAll() {
+  const errors: IErrorObject[] = [];
+  const traverse = async (node: PageNode | SceneNode) => {
+    // Skip if the node isn't visible
+    if (node.type !== 'PAGE' && !node.visible) {
+      return;
+    }
+    
+    // Ignore specified components
+    if (node.type === 'INSTANCE' && await isIgnoredComponent(node)) {
+      return; // Skip this node because it's an ignored component
+    }
 
-// interface IRadius {
-//     node: InstanceNode | FrameNode
-//     errors: { message: string; type: string; node: any; value: string; }[]
-//     radiusValues: string | any[]
-// }
+    if (isAllowedNodeType(node)) {
+      // Check fills
+      if ('fills' in node && Array.isArray(node.fills)) {
+        node.fills.forEach(fill => {
+          if (fill.type === 'SOLID' && !fill.colorStyleId && fill.visible) {
+            const hasNoBoundVariables = !fill.boundVariables || Object.keys(fill.boundVariables).length === 0;
+            if (hasNoBoundVariables && fill.color) {
+              const colorHex = rgbToHex(fill.color.r, fill.color.g, fill.color.b);
+              errors.push(createErrorObject({
+                node: node,
+                type: 'Fill',
+                message: 'Missing fill token',
+                value: colorHex
+              }));
+            }
+          }
+        });
+      }
 
-// // Lint border radius
-// export function checkRadius({node, errors, radiusValues}: IRadius) {
-//     let cornerType = node.cornerRadius;
+      // Check strokes
+      if ('strokes' in node && Array.isArray(node.strokes)) {
+        node.strokes.forEach(stroke => {
+          if (stroke.type === 'SOLID' && !stroke.colorStyleId && stroke.visible) {
+            const hasNoBoundStrokeVariables = !stroke.boundVariables || Object.keys(stroke.boundVariables).length === 0;
+            if (hasNoBoundStrokeVariables) {
+              const strokeColorHex = stroke.color ? rgbToHex(stroke.color.r, stroke.color.g, stroke.color.b) : 'Unknown Color';
+              errors.push(createErrorObject({
+                node: node,
+                type: 'Stroke',
+                message: 'Missing border token',
+                value: strokeColorHex  // Providing the actual stroke color value as hex
+              }));
+            }
+          }
+        });
+      }
 
-//     if (typeof cornerType !== "symbol") {
-//         if (cornerType === 0) {
-//             return;
-//         }
-//     }
+      // Check text styles
+      if ('textStyleId' in node && 'fontName' in node && 'fontSize' in node) {
+        const missingTypeToken = node.textStyleId === "";
+        if (missingTypeToken) {
+          if (node.fontName !== figma.mixed) {
+            try {
+              await figma.loadFontAsync(node.fontName);
 
-//     // If the radius isn't even on all sides, check each corner.
-//     if (typeof cornerType === "symbol") {
-//         if (radiusValues.indexOf(node.topLeftRadius) === -1) {
-//             return errors.push(
-//                 createErrorObject({
-//                     node,
-//                     "radius",
-//                     "Incorrect Top Left Radius",
-//                     node.topRightRadius
-//                 })
-//             );
-//         } else if (radiusValues.indexOf(node.topRightRadius) === -1) {
-//             return errors.push(
-//                 createErrorObject(
-//                     node,
-//                     "radius",
-//                     "Incorrect top right radius",
-//                     node.topRightRadius
-//                 )
-//             );
-//         } else if (radiusValues.indexOf(node.bottomLeftRadius) === -1) {
-//             return errors.push(
-//                 createErrorObject(
-//                     node,
-//                     "radius",
-//                     "Incorrect bottom left radius",
-//                     node.bottomLeftRadius
-//                 )
-//             );
-//         } else if (radiusValues.indexOf(node.bottomRightRadius) === -1) {
-//             return errors.push(
-//                 createErrorObject(
-//                     node,
-//                     "radius",
-//                     "Incorrect bottom right radius",
-//                     node.bottomRightRadius
-//                 )
-//             );
-//         } else {
-//             return;
-//         }
-//     } else {
-//         if (radiusValues.indexOf(node.cornerRadius) === -1) {
-//             return errors.push(
-//                 createErrorObject(
-//                     node,
-//                     "radius",
-//                     "Incorrect border radius",
-//                     node.cornerRadius
-//                 )
-//             );
-//         } else {
-//             return;
-//         }
-//     }
-// }
+              const fontValues = `${node.fontName.family} / ${String(node.fontSize)}px`;
+              errors.push(createErrorObject({
+                node: node,
+                type: 'Type',
+                message: 'Missing typography token',
+                value: fontValues
+              }));
+            } catch (error) {
+              console.error('Failed to load font:', error);
+              errors.push(createErrorObject({
+                node: node,
+                type: 'Type',
+                message: 'Missing typography token',
+                value: 'Failed to load font'
+              }))
+              // Handle the error appropriately, perhaps by logging it or by creating an error object with a default message
+            }
+          }
+        }
+      }
 
-// // Check for effects like shadows, blurs etc.
-// export function checkEffects(node, errors) {
-//     if (node.effects.length) {
-//         if (node.effectStyleId === "") {
-//             const effectsArray = [];
+      // Check border radius
+    }
 
-//             node.effects.forEach(effect => {
-//                 let effectsObject = {
-//                     type: "",
-//                     radius: "",
-//                     offsetX: "",
-//                     offsetY: "",
-//                     fill: "",
-//                     value: ""
-//                 };
+    // Traverse children
+    if ('children' in node) {
+      await Promise.all(node.children.map(child => traverse(child)));
+    }
+  };
 
-//                 // All effects have a radius.
-//                 effectsObject.radius = effect.radius;
+  const selection = figma.currentPage.selection;
+  if (selection.length > 0) {
+    await Promise.all(selection.map(node => traverse(node)));
+  } else {
+    await traverse(figma.currentPage);
+  }
 
-//                 if (effect.type === "DROP_SHADOW") {
-//                     effectsObject.type = "Drop Shadow";
-//                 } else if (effect.type === "INNER_SHADOW") {
-//                     effectsObject.type = "Inner Shadow";
-//                 } else if (effect.type === "LAYER_BLUR") {
-//                     effectsObject.type = "Layer Blur";
-//                 } else {
-//                     effectsObject.type = "Background Blur";
-//                 }
+  return errors;
+}
 
-//                 if (effect.color) {
-//                     let effectsFill = convertColor(effect.color);
-//                     effectsObject.fill = RGBToHex(
-//                         effectsFill["r"],
-//                         effectsFill["g"],
-//                         effectsFill["b"]
-//                     );
-//                     effectsObject.offsetX = effect.offset.x;
-//                     effectsObject.offsetY = effect.offset.y;
-//                     effectsObject.value = `${effectsObject.type} ${effectsObject.fill} ${effectsObject.radius}px X: ${effectsObject.offsetX}, Y: ${effectsObject.offsetY}`;
-//                 } else {
-//                     effectsObject.value = `${effectsObject.type} ${effectsObject.radius}px`;
-//                 }
-
-//                 effectsArray.unshift(effectsObject);
-//             });
-
-//             let currentStyle = effectsArray[0].value;
-
-//             return errors.push(
-//                 createErrorObject(
-//                     node,
-//                     "effects",
-//                     "Missing effects style",
-//                     currentStyle
-//                 )
-//             );
-//         } else {
-//             return;
-//         }
-//     }
-// }
-
-// export function checkFills(node, errors) {
-//     if (node.fills.length && node.visible === true) {
-//         if (
-//             node.fillStyleId === "" &&
-//             node.fills[0].type !== "IMAGE" &&
-//             node.fills[0].visible === true
-//         ) {
-//             // We may need an array to loop through fill types.
-//             return errors.push(
-//                 createErrorObject(
-//                     node,
-//                     "fill",
-//                     "Missing fill style",
-//                     determineFill(node.fills)
-//                 )
-//             );
-//         } else {
-//             return;
-//         }
-//     }
-// }
-
-// export function checkBackgroundsForTextFills(node, errors) {
-//     const TextFills = [
-//         // Dark Theme
-//         "5c1691cbeaaf4270107d34f1a12f02fdd04afa02",
-//         "bc090cb3b1c7313ae276acbd791b5b87b478ec59",
-//         "5c77a96137b698b5575557c069cabd6877d66e1e",
-//         "5d84ad92f3ad152f196e2093a3c0542a08dfba11",
-//         "bf03232753079bdd5bec6c55343b659876b5283f",
-//         "287463bade90c1eed5ea4cb0b5d63794daa8aec2",
-//         "502dcdf04992818dcbaed125ad711b446dee4c68",
-//         "3eddc15e90bbd7064aea7cc13dc13e23a712f0b0",
-//         "fa698aa2a724522a7c29efb0a662aec75a1be5a1",
-//         // Light Theme
-//         "b19a14675b8adeb1528ab5f84e57b2eeed10d46c",
-//         "608f2ea1aa64ff7f202e8c22cc4147a02be9d85b",
-//         "546c7d46e754ac2b23b338783d72f206b77b6436",
-//         "7d8703ec132ddaf6968f6d190d1e80031c559d7c",
-//         "64d3058dd508a4985670b2d19418a06a3503c9c2",
-//         "9c23a031773711e026394f4354661c37ee5b4682",
-//         "e9542e95adf3bbe74286c2cf279fee64f7ba3279",
-//         "620c98e8f9255a6107dee91745669e5b702b413c",
-//         "9328cd78a39149b070d68f98d9fe4df7a92bf67d"
-//     ];
-
-//     let nodeFillStyle = node.fillStyleId;
-
-//     // We strip the additional style key characters so we can check
-//     // to see if the fill is being used incorrectly.
-//     nodeFillStyle = nodeFillStyle.replace("S:", "");
-//     nodeFillStyle = nodeFillStyle.split(",")[0];
-
-//     if (nodeFillStyle !== "") {
-//         if (TextFills.includes(nodeFillStyle)) {
-//             return errors.push(
-//                 createErrorObject(
-//                     node,
-//                     "fill",
-//                     "Incorrect text color use",
-//                     "Using a text color instead of a background style"
-//                 )
-//             );
-//         } else {
-//             checkFills(node, errors);
-//         }
-//     }
-// }
-
-// // Custom Lint rule in lintingFunctions.ts
-// // that ensures our text fills aren't design tokens/styles meant for backgrounds.
-// export function customCheckTextFills(node, errors) {
-//     // Here we create an array of style keys (https://www.figma.com/plugin-docs/api/PaintStyle/#key)
-//     // that we want to make sure our text layers aren't using.
-//     const fillsToCheck = [
-//         "4b93d40f61be15e255e87948a715521c3ae957e6",
-//         "fb1358e5bd6dec072801298238cf49ff77b79a4b",
-//         "abf9ad88ae1ade1a4b945b012f0965c9cdc068c9",
-//         "ef179b6abe6cb8779857e05a6333d33f7a2b9320",
-//         "3dd0e30ce0a8287eb91ec1fbeff92031e634ed01",
-//         "11516f4b43f381afb5a6bdf2c34b9437f0eecde1",
-//         "2449a2983d43793d80baa20c6c60e8a48e7f3a0c",
-//         "83704278c845a6a7ceb1f837387972ccb6d41960",
-//         "6acd84c794796d112d4e9d22c4c8a5cae940a61d",
-//         "dbd02a76b7b77c1976114c04068f0fbc22015fab",
-//         "9328cd78a39149b070d68f98d9fe4df7a92bf67d",
-//         "6c8b08a42f9614842e880bf7bb795014d8fbae94"
-//     ];
-
-//     let nodeFillStyle = node.fillStyleId;
-
-//     // If there are multiple text styles on a single text layer, we can't lint it
-//     // we can return an error instead.
-//     if (typeof nodeFillStyle === "symbol") {
-//         return errors.push(
-//             createErrorObject(
-//                 node, // Node object we use to reference the error (id, layer name, etc)
-//                 "fill", // Type of error (fill, text, effect, etc)
-//                 "Mixing two styles together", // Message we show to the user
-//                 "Multiple Styles" // Normally we return a hex value here
-//             )
-//         );
-//     }
-
-//     // We strip the additional style key characters so we can check
-//     // to see if the fill is being used incorrectly.
-//     nodeFillStyle = nodeFillStyle.replace("S:", "");
-//     nodeFillStyle = nodeFillStyle.split(",")[0];
-
-//     // If the node (layer) has a fill style, then check to see if there's an error.
-//     if (nodeFillStyle !== "") {
-//         // If we find the layer has a fillStyle that matches in the array create an error.
-//         if (fillsToCheck.includes(nodeFillStyle)) {
-//             return errors.push(
-//                 createErrorObject(
-//                     node, // Node object we use to reference the error (id, layer name, etc)
-//                     "fill", // Type of error (fill, text, effect, etc)
-//                     "Incorrect text color use", // Message we show to the user
-//                     "Using a background color on a text layer" // Determines the fill, so we can show a hex value.
-//                 )
-//             );
-//         }
-//         // If there is no fillStyle on this layer,
-//         // check to see why with our default linting function for fills.
-//     } else {
-//         checkFills(node, errors);
-//     }
-// }
-
-// export function checkStrokes(node, errors) {
-//     if (node.strokes.length) {
-//         if (node.strokeStyleId === "" && node.visible === true) {
-//             let strokeObject = {
-//                 strokeWeight: "",
-//                 strokeAlign: "",
-//                 strokeFills: []
-//             };
-
-//             strokeObject.strokeWeight = node.strokeWeight;
-//             strokeObject.strokeAlign = node.strokeAlign;
-//             strokeObject.strokeFills = determineFill(node.strokes);
-
-//             let currentStyle = `${strokeObject.strokeFills} / ${strokeObject.strokeWeight} / ${strokeObject.strokeAlign}`;
-
-//             return errors.push(
-//                 createErrorObject(node, "stroke", "Missing stroke style", currentStyle)
-//             );
-//         } else {
-//             return;
-//         }
-//     }
-// }
-
-// export function checkType(node, errors) {
-//     if (node.textStyleId === "" && node.visible === true) {
-//         let textObject = {
-//             font: "",
-//             fontStyle: "",
-//             fontSize: "",
-//             lineHeight: {}
-//         };
-
-//         textObject.font = node.fontName.family;
-//         textObject.fontStyle = node.fontName.style;
-//         textObject.fontSize = node.fontSize;
-
-//         // Line height can be "auto" or a pixel value
-//         if (node.lineHeight.value !== undefined) {
-//             textObject.lineHeight = node.lineHeight.value;
-//         } else {
-//             textObject.lineHeight = "Auto";
-//         }
-
-//         let currentStyle = `${textObject.font} ${textObject.fontStyle} / ${textObject.fontSize} (${textObject.lineHeight} line-height)`;
-
-//         return errors.push(
-//             createErrorObject(node, "text", "Missing text style", currentStyle)
-//         );
-//     } else {
-//         return;
-//     }
-// }
-
-// // Utility functions for color conversion.
-// const convertColor = (color: any) => {
-//     const colorObj = color;
-//     const figmaColor = {};
-
-//     Object.entries(colorObj).forEach(cf => {
-//         const [key, value] = cf;
-
-//         if (["r", "g", "b"].includes(key)) {
-//             figmaColor[key] = (255 * (value as number)).toFixed(0);
-//         }
-//         if (key === "a") {
-//             figmaColor[key] = value;
-//         }
-//     });
-//     return figmaColor;
-// };
-
-// function RGBToHex(r: string, g: string, b: string) {
-//     r = Number(r).toString(16);
-//     g = Number(g).toString(16);
-//     b = Number(b).toString(16);
-
-//     if (r.length == 1) r = "0" + r;
-//     if (g.length == 1) g = "0" + g;
-//     if (b.length == 1) b = "0" + b;
-
-//     return "#" + r + g + b;
-// }
+// Collect errors and send to app
+export async function handleLinting() {
+  const issues = await lintAll();
+  emit('ISSUES_FOUND', issues);
+}
