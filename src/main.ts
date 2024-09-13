@@ -3,7 +3,7 @@ import { ResizeWindowHandler } from './types';
 import { createDate, createNumber, createTime } from './utils/localizerFunctions';
 import { handleComponentSetInstances, replaceAllInstances, replaceInstance } from './utils/migratorFunctions';
 import { applyImagesToSelectedNodes } from './utils/generatorFunctions'
-import { handleLinting } from './utils/lintingFunctions';
+import { handleLinting, updateNode } from './utils/lintingFunctions';
 
 export default function () {
   // Set up UI
@@ -43,5 +43,5 @@ export default function () {
   });
 
   on('FIND_ISSUES', handleLinting);
-  // on('UPDATE_NODE_PROPERTY', updateNode);
+  on('UPDATE_NODE_PROPERTY', updateNode);
 }

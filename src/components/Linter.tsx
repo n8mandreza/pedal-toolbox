@@ -54,7 +54,8 @@ export default function Linter() {
   // Side effect to update node list if an item is updated
   useEffect(() => {
     const unsubscribe = on('UPDATE_ISSUE_LIST', ({ nodeId, issueType }) => {
-      setIssues(currentIssues => currentIssues.filter(issue => issue.node.id !== nodeId && issue.type !== issueType));
+      console.log('UPDATE_ISSUE_LIST received with:', { nodeId, issueType });
+      setIssues(currentIssues => currentIssues.filter(issue => !(issue.node.id === nodeId && issue.type === issueType)));
     });
 
     return () => {
@@ -100,12 +101,12 @@ export default function Linter() {
                 suggestion={issue.suggested ? `Suggested: ${issue.suggested}` : null}
                 selected={issue.node.id === selectedNode?.id}
                 onClick={() => handleNodeClick(issue.node)}
-                // actionLabel={issue.suggested ? 'Update' : null}
-                // action={issue.suggested ? () => emit('UPDATE_NODE_PROPERTY', {
-                //   nodeId: issue.node.id, 
-                //   issueType: issue.type, 
-                //   update: issue.suggested
-                // }) : undefined}
+                actionLabel={issue.suggested ? 'Update' : null}
+                action={issue.suggested ? () => emit('UPDATE_NODE_PROPERTY', {
+                  nodeId: issue.node.id, 
+                  issueType: issue.type, 
+                  suggestion: issue.suggested
+                }) : undefined}
               />
             ))}
           </div>

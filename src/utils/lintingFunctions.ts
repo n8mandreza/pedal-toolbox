@@ -46,58 +46,67 @@ function getSuggestedVariable(nodeType: string, colorHex: string): string | unde
   if (nodeType === 'TEXT') {
     if (colorHex === '#231f20' || colorHex === '#121214' || colorHex === '#000000') {
       return 'text_01';  // Suggest text_01 for standard text colors
-    } else if (colorHex === '#593cfb') {
-      return 'interactive_text';  // Suggest interactive_text for interactive color
-    } else if (colorHex === '#767677') {
+    } else if (colorHex === '#59595b') {
       return 'text_02'
-    }
+    } else if (colorHex === '#767677') {
+      return 'text_04'
+    } else if (colorHex === '#593cfb') {
+      return 'interactive_text';
+    } 
   }
   return undefined;  // Return undefined if no suggestions match
 }
 
 // Define a mapping from suggestion strings to Figma variable IDs or other properties
-// interface IVariableSuggestionMap {
-//   [key: string]: string;
-//   text_01: string;
-//   interactive_text: string;
-// }
+interface IVariableSuggestionMap {
+  [key: string]: string;
+}
 
-// const suggestionToVariableId: IVariableSuggestionMap = {
-//   'text_01': 'VariableId:2ec1aa98cd38553ce2f64c5b787e9a0ead9d5bd9/134:765',  // /134:765
-//   'interactive_text': 'VariableId:3baed139d69459a2c081bcdba0ab1fc59c988baf/1857:1',  // /1857:1
-// };
+const suggestionToVariableKey: IVariableSuggestionMap = {
+  'text_01': '2ec1aa98cd38553ce2f64c5b787e9a0ead9d5bd9',  // VariableId:2ec1aa98cd38553ce2f64c5b787e9a0ead9d5bd9/134:765
+  'text_02': 'f3224d037f3a58ebbe4b87534454c54ba9ee18be',
+  'text_04': '894848e7a87968547692491d8aeed0bddd2e0a54',
+  'interactive_text': '3baed139d69459a2c081bcdba0ab1fc59c988baf',
+  'stroke_01': '744f49c6519b8ba20e1829c3e36df92bb4877720'
+};
 
-// export async function updateNode({ nodeId, issueType, suggestion }: { nodeId: string, issueType: string, suggestion: string }) {
-//   const node = await figma.getNodeByIdAsync(nodeId) // as TextNode;
+export async function updateNode({ nodeId, issueType, suggestion }: { nodeId: string, issueType: string, suggestion: string }) {
+  const node = await figma.getNodeByIdAsync(nodeId) // as TextNode;
 
-//   if (node && suggestionToVariableId[suggestion]) {
-//     try {
-//       // Check if node supports fills
-//       if ("fills" in node) {
-//         // Fetch the variable from the team library
-//         const fillsCopy = clone(node.fills)
-//         const variable = await figma.variables.importVariableByKeyAsync(suggestionToVariableId[suggestion]);
+  if (node) {
+    if (suggestionToVariableKey[suggestion]) {
+      try {
+        // Check if node supports fills
+        if ("fills" in node) {
+          // Fetch the variable from the team library
+          const variable = await figma.variables.importVariableByKeyAsync(suggestionToVariableKey[suggestion]);
 
-//         if (variable) {
-//           // Apply the style to the node's fills
-//           fillsCopy[0] = node.setBoundVariableForPaint(fillsCopy[0], 'color', variable);
-//           node.fills = fillsCopy
-//           emit('UPDATE_ISSUE_LIST', { instanceId: nodeId, issueType: issueType });  // Emit an event to update the UI state
-//         } else {
-//           throw new Error("Style not found");
-//         }
-//       } else {
-//         throw new Error("Node type does not support fills");
-//       }
-//     } catch (error) {
-//       console.error('Error applying suggestion:', error);
-//       emit('ERROR', { message: 'Failed to apply suggested changes' });
-//     }
-//   } else {
-//     console.error('Node not found or suggestion not recognized');
-//     emit('ERROR', { message: 'Node not found or suggestion invalid' });
-//   }
-// }
+          if (variable) {
+            // Apply the style to the node's fills
+            node.fills = [figma.variables.setBoundVariableForPaint({ type: 'SOLID', color: { r: 0, g: 0, b: 0 } }, 'color', variable)];
+            emit('UPDATE_ISSUE_LIST', { nodeId: nodeId, issueType: issueType });  // Emit an event to update the UI state
+            figma.notify('Layer successfully updated')
+          } else {
+            console.error("Variable not found");
+            figma.notify('Variable not found', { error: true })
+          }
+        } else {
+          console.error("Node type does not support fills");
+          figma.notify('Node type does not support fills', { error: true })
+        }
+      } catch (error) {
+        console.error('Error applying suggestion:', error);
+        figma.notify('Failed to apply suggested changes', {error: true})
+      }
+    } else {
+      console.error('Suggestion not recognized');
+      figma.notify('Suggestion not found', { error: true });
+    }
+  } else {
+    console.error('Could not find node');
+    figma.notify('Could not find node', {error: true});
+  }
+}
 
 // Components to ignore
 async function isIgnoredComponent(node: InstanceNode): Promise<boolean> {

@@ -60,6 +60,7 @@ export async function replaceInstance({ instanceId, newComponentKey }: IInstance
     if (newComponent) {
       instance.swapComponent(newComponent);
       emit('UPDATE_INSTANCE_LIST', { instanceId });
+      figma.notify('Instance successfully updated')
     } else {
       console.error(`Failed to import component with key: ${newComponentKey}.`)
     }
