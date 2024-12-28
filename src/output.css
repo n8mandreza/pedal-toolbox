@@ -1308,6 +1308,10 @@ video {
   border-style: solid;
 }
 
+.border-none {
+  border-style: none;
+}
+
 .bg-transparent {
   background-color: transparent;
 }
@@ -1398,6 +1402,10 @@ video {
 
 .pr-3 {
   padding-right: 0.75rem;
+}
+
+.pr-4 {
+  padding-right: 1rem;
 }
 
 .pt-2 {
@@ -1583,6 +1591,10 @@ video {
 .hover\:interactive-stroke-02:hover:is(.figma-dark *) {
   --tw-border-opacity: 1;
   border-color: rgb(65 65 67 / var(--tw-border-opacity));
+}
+
+.last\:border-none:last-child {
+  border-style: none;
 }
 
 .hover\:cursor-pointer:hover {

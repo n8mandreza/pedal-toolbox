@@ -103,21 +103,26 @@ export default function DeviceGenerator() {
   return (
     <div class="w-full h-full flex flex-col">
       <HeaderBar title='Generate device frames' />
-      <div className='p-4 flex flex-col gap-4'>
-        <p className='text-sm text-02'>Select a frame to generate new frames based on the selected devices</p>
 
-        {deviceSizes.map((deviceSize) => (
-          <Checkbox
-            label={deviceSize.label}
-            value={deviceSize.value}
-            checked={!!devices.find(device => device.name === deviceSize.value)}
-            description={deviceSize.description}
-            onChange={handleCheckboxChange}
-          />
-        ))}
+      <div class="flex flex-col gap-3 w-full h-full overflow-scroll">
+        <p className='p-4 text-sm text-02'>Select a frame to generate new frames based on the selected devices</p>
+
+        <div className='flex flex-col border-t border-b stroke-01 pl-4'>
+          {deviceSizes.map((deviceSize) => (
+            <div className='border-b last:border-none stroke-01 py-2 pr-4'>
+              <Checkbox
+                label={deviceSize.label}
+                value={deviceSize.value}
+                checked={!!devices.find(device => device.name === deviceSize.value)}
+                description={deviceSize.description}
+                onChange={handleCheckboxChange}
+              />
+            </div>
+          ))}
+        </div>
       </div>
 
-      <div class="w-full h-full flex flex-col gap-3 p-4">
+      <div class="flex flex-col p-4 gap-3 surface-sticky border-t border-solid stroke-01">
         <Button
           label="Generate frames"
           variant="primary"

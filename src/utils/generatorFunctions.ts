@@ -80,21 +80,20 @@ export async function applyImagesToSelectedNodes() {
 // Devices grouped by size (screen resolution)
 type DeviceSize = {
   name: string;
-  title: string;
   width: number;
   height: number;
 };
 
 const sizes: DeviceSize[] = [
-  { name: 'size414x896', title: 'iPhone XR | 11 | 11 Pro Max', width: 414, height: 896 },
-  { name: 'size375x812', title: 'iPhone 11 Pro | 12 mini | 13 mini', width: 375, height: 812 },
-  { name: 'size375x667', title: 'iPhone SE (3rd Gen)', width: 375, height: 667 },
-  { name: 'size390x844', title: 'iPhone 12 | 12 Pro | 13 | 13 Pro | 14', width: 390, height: 844 },
-  { name: 'size428x926', title: 'iPhone 12 Pro Max | 13 Pro Max | 14 Plus', width: 428, height: 926 },
-  { name: 'size393x852', title: 'iPhone 14 Pro | 15 | 15 Pro | 16', width: 393, height: 852 },
-  { name: 'size430x932', title: 'iPhone 14 Pro Max | 15 Plus | 15 Pro Max | 16 Plus', width: 430, height: 932 },
-  { name: 'size402x874', title: 'iPhone 16 Pro', width: 402, height: 874 },
-  { name: 'size440x956', title: 'iPhone 16 Pro Max', width: 440, height: 956 },
+  { name: 'size414x896', width: 414, height: 896 },
+  { name: 'size375x812', width: 375, height: 812 },
+  { name: 'size375x667', width: 375, height: 667 },
+  { name: 'size390x844', width: 390, height: 844 },
+  { name: 'size428x926', width: 428, height: 926 },
+  { name: 'size393x852', width: 393, height: 852 },
+  { name: 'size430x932', width: 430, height: 932 },
+  { name: 'size402x874', width: 402, height: 874 },
+  { name: 'size440x956', width: 440, height: 956 },
 ]
 
 // Clones a frame with the specified width & height
