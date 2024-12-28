@@ -98,8 +98,6 @@ export default function DeviceGenerator() {
     emit('GENERATE_DEVICES', devices)
   }
 
-  console.log(devices)
-
   return (
     <div class="w-full h-full flex flex-col">
       <HeaderBar title='Generate device frames' />
