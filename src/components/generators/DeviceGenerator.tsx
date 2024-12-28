@@ -102,7 +102,7 @@ export default function DeviceGenerator() {
     <div class="w-full h-full flex flex-col">
       <HeaderBar title='Generate device frames' />
 
-      <div class="flex flex-col gap-3 w-full h-full overflow-scroll">
+      <div class="flex flex-col w-full h-full overflow-scroll">
         <p className='p-4 text-sm text-02'>Select a frame to generate new frames based on the selected devices</p>
 
         <div className='flex flex-col border-t border-b stroke-01 pl-4'>
