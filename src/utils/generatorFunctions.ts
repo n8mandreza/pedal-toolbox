@@ -1,4 +1,6 @@
+import { HeartIcon } from 'lucide-preact';
 import vehicleImagesJson from './vehicleImages.json'
+import { DeviceOption } from '../types';
 const vehicleImages: { [key: string]: string } = vehicleImagesJson;
 
 async function fetchImageAsUint8Array(imageUrl: string) {
@@ -35,17 +37,18 @@ async function loadVehicleImages() {
     throw error;
   }
 }
+
 // Replace selected nodes with image fills
 function renderImages(imageDataArray: Uint8Array[]) {
   // Create image hashes for all images
   const imageHashes = imageDataArray.map(data => figma.createImage(data).hash);
 
   // Get currently selected nodes
-  const selectedNodes = figma.currentPage.selection;
+  const selection = figma.currentPage.selection;
 
-  if (selectedNodes.length > 0) {
+  if (selection.length > 0) {
     // Loop through each selected node and assign an image fill from imageHashes
-    selectedNodes.forEach((node, index) => {
+    selection.forEach((node, index) => {
       if ("fills" in node) {
         // Calculate the index for the imageHashes array, looping if necessary
         const imageIndex = index % imageHashes.length;
@@ -71,5 +74,90 @@ export async function applyImagesToSelectedNodes() {
   } catch (error) {
     console.error('Failed to load images:', error);
     figma.notify('Failed to load images');
+  }
+}
+
+// Devices grouped by size (screen resolution)
+type DeviceSize = {
+  name: string;
+  title: string;
+  width: number;
+  height: number;
+};
+
+const sizes: DeviceSize[] = [
+  { name: 'size414x896', title: 'iPhone XR | 11 | 11 Pro Max', width: 414, height: 896 },
+  { name: 'size375x812', title: 'iPhone 11 Pro | 12 mini | 13 mini', width: 375, height: 812 },
+  { name: 'size375x667', title: 'iPhone SE (3rd Gen)', width: 375, height: 667 },
+  { name: 'size390x844', title: 'iPhone 12 | 12 Pro | 13 | 13 Pro | 14', width: 390, height: 844 },
+  { name: 'size428x926', title: 'iPhone 12 Pro Max | 13 Pro Max | 14 Plus', width: 428, height: 926 },
+  { name: 'size393x852', title: 'iPhone 14 Pro | 15 | 15 Pro | 16', width: 393, height: 852 },
+  { name: 'size430x932', title: 'iPhone 14 Pro Max | 15 Plus | 15 Pro Max | 16 Plus', width: 430, height: 932 },
+  { name: 'size402x874', title: 'iPhone 16 Pro', width: 402, height: 874 },
+  { name: 'size440x956', title: 'iPhone 16 Pro Max', width: 440, height: 956 },
+]
+
+// Clones a frame with the specified width & height
+function generateNewDevice(
+  parent: FrameNode | ComponentNode | InstanceNode,
+  startX: number,
+  y: number,
+  width: number,
+  height: number,
+  deviceName: string
+): number {
+  // Clone the original frame
+  const clonedFrame = parent.clone();
+
+  // Set the new position
+  clonedFrame.x = startX;
+  clonedFrame.y = y;
+
+  // Set new dimensions
+  clonedFrame.resize(width, height);
+
+  // Rename the frame
+  clonedFrame.name = deviceName;
+
+  // Ensure the new frame is appended to the same parent
+  if (parent.parent) {
+    parent.parent.appendChild(clonedFrame);
+  } else {
+    figma.currentPage.appendChild(clonedFrame);
+  }
+
+  figma.notify("Frame duplicated successfully!");
+
+  // Return the right edge of the new frame
+  return clonedFrame.x + clonedFrame.width + 80;
+}
+
+export function generateDevices(devices: DeviceOption[]) {
+  const selection = figma.currentPage.selection;
+
+  if (selection.length === 1 && selection[0].type === 'FRAME') {
+    const sourceFrame = selection[0] as FrameNode;
+    let currentXPosition = sourceFrame.x + sourceFrame.width + 80;
+
+    devices.forEach(device => {
+      if (device.checked) {
+        const size = sizes.find((s) => s.name === device.name);
+
+        if (size) {
+          currentXPosition = generateNewDevice(
+            sourceFrame,
+            currentXPosition,
+            sourceFrame.y,
+            size.width,
+            size.height,
+            device.description
+          );
+        } else {
+          figma.notify(`Size for ${device.name} not found`, { error: true });
+        }
+      }
+    });
+  } else {
+    figma.notify("Please select a single frame to duplicate.", { error: true });
   }
 }

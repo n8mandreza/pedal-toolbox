@@ -139,6 +139,10 @@
         @apply bg-grey-100 dark:bg-grey-750;
     }
 
+    .surface-05 {
+        @apply bg-grey-900 dark:bg-grey-75;
+    }
+
     .surface-sticky {
         @apply bg-white dark:bg-grey-900;
     }
@@ -183,6 +187,10 @@
     }
 
     /* Icon Colors */
+    .icon-02 {
+        @apply stroke-white dark:stroke-grey-900;
+    }
+
     .icon-alert {
         @apply fill-yellow-400 dark:fill-yellow-400;
     }

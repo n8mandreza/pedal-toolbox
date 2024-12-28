@@ -2,7 +2,7 @@ import { on, showUI } from '@create-figma-plugin/utilities'
 import { ResizeWindowHandler } from './types';
 import { createDate, createNumber, createTime } from './utils/localizerFunctions';
 import { handleComponentSetInstances, replaceAllInstances, replaceInstance } from './utils/migratorFunctions';
-import { applyImagesToSelectedNodes } from './utils/generatorFunctions'
+import { applyImagesToSelectedNodes, generateDevices } from './utils/generatorFunctions'
 import { handleLinting, updateNode } from './utils/lintingFunctions';
 
 export default function () {
@@ -22,6 +22,7 @@ export default function () {
   )
 
   on('GENERATE_VEHICLES', applyImagesToSelectedNodes)
+  on('GENERATE_DEVICES', generateDevices)
 
   on('CREATE-DATE', createDate)
   on('CREATE-TIME', createTime)

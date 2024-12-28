@@ -1,5 +1,5 @@
 import { h } from "preact";
-import Button from "./buttons/Button";
+import Button from "../buttons/Button";
 import { emit } from "@create-figma-plugin/utilities";
 
 export default function VehicleImageGenerator() {

@@ -136,7 +136,11 @@ export default {
       'xl': '24px',
       'full': '9999px'
     },
-    extend: {},
+    extend: {
+      cursor: {
+        'inherit': 'inherit'
+      }
+    },
   },
   plugins: [],
   darkMode: ['class', '.figma-dark']

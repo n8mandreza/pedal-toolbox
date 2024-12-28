@@ -13,6 +13,7 @@ import ImageMigrator from './components/migrators/ImageMigrator'
 import AlertMigrator from './components/migrators/AlertMigrator'
 import Linter from './components/Linter'
 import AlertBannerMigrator from './components/migrators/AlertBannerMigrator'
+import DeviceGenerator from './components/generators/DeviceGenerator'
 
 function Plugin () {
   const [currentView, setCurrentView] = useState('linter')
@@ -36,6 +37,8 @@ function Plugin () {
     switch (currentView) {
       // case 'vehicleImageGenerator':
       //   return <VehicleImageGenerator />;
+      case 'devices':
+        return <DeviceGenerator />;
       case 'currencyLocalizer':
         return <CurrencyLocalizer />;
       case 'dateLocalizer':
@@ -61,10 +64,14 @@ function Plugin () {
     <div class="w-screen h-screen flex body overflow-y-scroll text-base screen-01 text-01">
       <div class="flex flex-col justify-between flex-shrink-0 w-48 px-2 py-2 overflow-scroll border-r border-solid surface-sticky stroke-01">
         <div class="flex flex-col gap-2">
-          {/* <p class="text-03 label-s p-2">Generators</p>
-          <TabItem label='Vehicles' selected={currentView === 'vehicleImageGenerator'} onClick={() => handleViewChange('vehicleImageGenerator')} /> */}
           <div class="flex flex-col">
             <TabItem label='Linter' badge='beta' selected={currentView === 'linter'} onClick={() => handleViewChange('linter')} />
+          </div>
+
+          <div class="flex flex-col">
+            <p class="text-03 label-s p-2">Generators</p>
+            {/* <TabItem label='Vehicles' selected={currentView === 'vehicleImageGenerator'} onClick={() => handleViewChange('vehicleImageGenerator')} /> */}
+            <TabItem label='Devices' badge='new' selected={currentView === 'devices'} onClick={() => handleViewChange('devices')} />
           </div>
 
           <div class="flex flex-col">
@@ -78,8 +85,8 @@ function Plugin () {
           <div class="flex flex-col">
             <p class="text-03 label-s py-2 px-1">Migrators</p>
             <TabItem label='AspectRatio → Image' selected={currentView === 'imageMigrator'} onClick={() => handleViewChange('imageMigrator')} />
-            <TabItem label='Alert (Web)' badge='new' selected={currentView === 'alertMigrator'} onClick={() => handleViewChange('alertMigrator')} />
-            <TabItem label='AlertBanner (Web)' badge='new' selected={currentView === 'alertBannerMigrator'} onClick={() => handleViewChange('alertBannerMigrator')} />
+            <TabItem label='Alert (Web)' selected={currentView === 'alertMigrator'} onClick={() => handleViewChange('alertMigrator')} />
+            <TabItem label='AlertBanner (Web)' selected={currentView === 'alertBannerMigrator'} onClick={() => handleViewChange('alertBannerMigrator')} />
           </div>
         </div>
       </div>

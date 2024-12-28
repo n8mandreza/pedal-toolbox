@@ -24,3 +24,9 @@ export interface IFeedbackMessage {
     status: 'success' | 'error';
     message: string;
 }
+
+export type DeviceOption = {
+    name: string
+    checked: boolean;
+    description: string;
+};
