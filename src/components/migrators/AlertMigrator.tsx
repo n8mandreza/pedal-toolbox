@@ -225,7 +225,12 @@ export default function AlertMigrator() {
           </div>
           <div class="flex flex-col p-4 gap-3 surface-sticky border-t border-solid stroke-01">
             <AlertBanner message="Running the migrator will reset any existing button labels. All other properties will be preserved." />
-            <Button label="Migrate all" fullWidth onClick={() => replaceAlertInstances(instances)} variant="primary" />
+            <Button 
+                label={`Migrate ${instances.length > 1 ? `${instances.length} instances` : `${instances.length} instance`}`}
+              fullWidth 
+              onClick={() => replaceAlertInstances(instances)} 
+              variant="primary" 
+            />
           </div>
         </Fragment>
       ) : (
