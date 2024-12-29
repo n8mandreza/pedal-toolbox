@@ -1,11 +1,11 @@
 import { h } from 'preact'
 
-interface IBadge {
+interface BadgeProps {
   label: string
   communicationType?: 'neutral' | 'info'
 }
 
-export default function Badge({label, communicationType = 'info'}: IBadge) {
+export default function Badge({ label, communicationType = 'info' }: BadgeProps) {
   const communicationTypeClasses = {
     'neutral': 'surface-03 text-01',
     'info': 'surface-info text-info'

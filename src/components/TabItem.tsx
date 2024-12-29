@@ -1,14 +1,14 @@
 import { h } from "preact"
 import Badge from "./Badge"
 
-interface ITabItem {
+interface TabItemProps {
   label: string
   selected: boolean
   badge?: 'new' | 'beta' | null
   onClick: () => void
 }
 
-export default function TabItem({ label, selected, badge = null, onClick }: ITabItem) {
+export default function TabItem({ label, selected, badge = null, onClick }: TabItemProps) {
   const classes = [
     'py-2 pl-3 pr-2', 
     'flex gap-1 w-full items-center',

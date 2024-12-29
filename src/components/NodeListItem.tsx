@@ -2,7 +2,7 @@ import { emit } from "@create-figma-plugin/utilities";
 import { Diamond, Type, Frame, BoxSelect, Minus, Tangent, Component } from "lucide-preact";
 import { h } from "preact";
 
-interface INodeListItem {
+interface NodeListItemProps {
   node: ComponentNode | FrameNode | GroupNode | InstanceNode | LineNode | TextNode | VectorNode;
   property?: string | boolean | null;
   suggestion?: string | boolean | null;
@@ -22,7 +22,7 @@ export default function NodeListItem({
   actionLabel = null,
   onClick,
   action
-}: INodeListItem) {
+}: NodeListItemProps) {
 
   function getNodeIcon(node: ComponentNode | FrameNode | GroupNode | InstanceNode | LineNode | TextNode | VectorNode) {
     switch (node.type) {

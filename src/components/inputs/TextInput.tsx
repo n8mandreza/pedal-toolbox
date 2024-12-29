@@ -1,6 +1,6 @@
 import { JSX, h } from "preact";
 
-interface ITextInput {
+interface TextInputProps {
   id: string;
   type: 'text' | 'number';
   label: string;
@@ -10,7 +10,7 @@ interface ITextInput {
   onChange: (event: JSX.TargetedEvent<HTMLInputElement, Event>) => void;
 }
 
-export default function TextInput({ id, type, label, defaultValue, placeholder, showLabel = true, onChange }: ITextInput) {
+export default function TextInput({ id, type, label, defaultValue, placeholder, showLabel = true, onChange }: TextInputProps) {
   return (
     <div class="flex flex-col gap-1 w-full">
       <label for={id} class={`label-s ${showLabel ? '' : 'hidden'}`}>

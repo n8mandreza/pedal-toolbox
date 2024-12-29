@@ -1,13 +1,13 @@
 import { h } from "preact"
 import { useEffect, useState } from "preact/hooks";
 
-interface ISpotIllustration {
+interface SpotIllustrationProps {
   communicationType: 'decorative' | 'success'
   lightSpotIllustration: React.ReactNode
   darkSpotIllustration: React.ReactNode
 }
 
-export default function SpotIllustration({ communicationType, lightSpotIllustration, darkSpotIllustration }: ISpotIllustration) {
+export default function SpotIllustration({ communicationType, lightSpotIllustration, darkSpotIllustration }: SpotIllustrationProps) {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {

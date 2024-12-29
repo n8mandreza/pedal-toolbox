@@ -1,12 +1,12 @@
 import { h } from "preact"
 import AlertFilled from "../icons/AlertFilled"
 
-interface IAlertBanner {
+interface AlertBannerProps {
   title?: string
   message: string
 }
 
-export default function AlertBanner({ title, message }: IAlertBanner) {
+export default function AlertBanner({ title, message }: AlertBannerProps) {
   return (
     <div class="surface-alert flex gap-3 items-center p-4 rounded-m">
       <div class="icon-alert w-6 h-6">

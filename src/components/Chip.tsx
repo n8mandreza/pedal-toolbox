@@ -1,6 +1,6 @@
 import { h } from "preact"
 
-interface IChip {
+interface ChipProps {
   label: string
   selected?: boolean
   disabled?: boolean
@@ -12,7 +12,7 @@ export default function Chip({
   selected = false,
   disabled = false,
   onClick
-}: IChip) {
+}: ChipProps) {
 
   const classes = [
     'font-semibold',

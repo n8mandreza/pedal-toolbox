@@ -7,7 +7,7 @@ import SpotSparkleLight from "../../illustrations/SpotSparkleLight";
 import SpotSparkleDark from "../../illustrations/SpotSparkleDark";
 import SpotThumbsUpSuccess from "../../illustrations/SpotThumbsUpSuccess";
 import ProgressIndicator from "../ProgressIndicator";
-import { IFeedbackMessage } from "../../types";
+import { FeedbackMessageProps } from "../../types";
 import NodeListItem from "../NodeListItem";
 import AlertBanner from "../AlertBanner";
 import HeaderBar from "../HeaderBar";
@@ -19,7 +19,7 @@ export default function AlertMigrator() {
   const [instances, setInstances] = useState<InstanceNode[]>([]);
   const [selectedInstance, setSelectedInstance] = useState<InstanceNode | null>(null);
   const [platform, setPlatform] = useState('Web');
-  const [feedback, setFeedback] = useState<IFeedbackMessage[]>([]);
+  const [feedback, setFeedback] = useState<FeedbackMessageProps[]>([]);
   const [isScanning, setIsScanning] = useState(false);
 
   const platforms = [

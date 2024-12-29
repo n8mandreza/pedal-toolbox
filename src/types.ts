@@ -5,7 +5,7 @@ export interface ResizeWindowHandler extends EventHandler {
     handler: (windowSize: { width: number; height: number }) => void
 }
 
-export interface IInstanceDetails {
+export interface InstanceDetailsProps {
     id: string;
     name: string;
     componentName: string;
@@ -14,12 +14,12 @@ export interface IInstanceDetails {
     children?: any;
 }
 
-export interface IInstanceSwap {
+export interface InstanceSwapProps {
     instanceId: string;
     newComponentKey: string;
 }
 
-export interface IFeedbackMessage {
+export interface FeedbackMessageProps {
     id: string;
     status: 'success' | 'error';
     message: string;

@@ -1,5 +1,5 @@
 import { emit } from "@create-figma-plugin/utilities";
-import { IInstanceSwap } from "../types";
+import { InstanceSwapProps } from "../types";
 
 // Find component set instances and collect detailed information
 export async function findComponentSetInstances(componentSetKey: string): Promise<any[]> {
@@ -53,7 +53,7 @@ export async function handleComponentSetInstances(componentSetKey: string) {
 }
 
 // Replace single instance with new component
-export async function replaceInstance({ instanceId, newComponentKey }: IInstanceSwap) {
+export async function replaceInstance({ instanceId, newComponentKey }: InstanceSwapProps) {
   const instance = await figma.getNodeByIdAsync(instanceId);
   if (instance && instance.type === 'INSTANCE') {
     const newComponent = await figma.importComponentByKeyAsync(newComponentKey);
@@ -71,7 +71,7 @@ export async function replaceInstance({ instanceId, newComponentKey }: IInstance
 
 // Replace all instances at once with new component
 export async function replaceAllInstances({ replacements }: any) {
-  const promises = replacements.map(async ({ instanceId, newComponentKey }: IInstanceSwap) => {
+  const promises = replacements.map(async ({ instanceId, newComponentKey }: InstanceSwapProps) => {
     const instance = await figma.getNodeByIdAsync(instanceId);
     if (instance && instance.type === 'INSTANCE') {
       const newComponent = await figma.importComponentByKeyAsync(newComponentKey);

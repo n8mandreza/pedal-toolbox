@@ -2,11 +2,11 @@ import { h } from 'preact'
 import IconButton from '../buttons/IconButton'
 import { BookOpenText } from 'lucide-preact'
 
-interface ILocalizerHeader {
+interface LocalizerHeaderProps {
   title: string
 }
 
-export default function LocalizerHeader({ title }: ILocalizerHeader) {
+export default function LocalizerHeader({ title }: LocalizerHeaderProps) {
   return (
     <div class="flex flex-col gap-1 pl-4 pr-2 pt-2">
       <div class="flex gap-3 items-center">

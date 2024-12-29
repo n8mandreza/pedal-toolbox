@@ -1,6 +1,6 @@
 import { h } from "preact"
 
-interface IButton {
+interface ButtonProps {
   label: string
   fullWidth?: boolean
   variant?: 'outline' | 'primary'
@@ -16,7 +16,7 @@ export default function Button({
   variant = 'outline', 
   disabled = false, 
   onClick
-}: IButton) {
+}: ButtonProps) {
 
   const variantClasses = {
     'primary': 'interactive-01 text-white',

@@ -7,7 +7,7 @@ import SpotSparkleLight from "../../illustrations/SpotSparkleLight";
 import SpotSparkleDark from "../../illustrations/SpotSparkleDark";
 import SpotThumbsUpSuccess from "../../illustrations/SpotThumbsUpSuccess";
 import ProgressIndicator from "../ProgressIndicator";
-import { IFeedbackMessage } from "../../types";
+import { FeedbackMessageProps } from "../../types";
 import NodeListItem from "../NodeListItem";
 import AlertBanner from "../AlertBanner";
 import HeaderBar from "../HeaderBar";
@@ -19,7 +19,7 @@ export default function AlertBannerMigrator() {
   const [instances, setInstances] = useState<InstanceNode[]>([]);
   const [selectedInstance, setSelectedInstance] = useState<InstanceNode | null>(null);
   const [platform, setPlatform] = useState('Web');
-  const [feedback, setFeedback] = useState<IFeedbackMessage[]>([]);
+  const [feedback, setFeedback] = useState<FeedbackMessageProps[]>([]);
   const [isScanning, setIsScanning] = useState(false);
 
   const platforms = [
@@ -225,7 +225,7 @@ export default function AlertBannerMigrator() {
           </div>
           <div class="flex flex-col p-4 gap-3 surface-sticky border-t border-solid stroke-01">
             <AlertBanner message="Running the migrator will reset any existing button labels. All other properties will be preserved." />
-            <Button label="Migrate all" fullWidth onClick={() => replaceAlertInstances(instances)} variant="primary" />
+            <Button label={`Migrate ${instances.length} instances`} fullWidth onClick={() => replaceAlertInstances(instances)} variant="primary" />
           </div>
         </Fragment>
       ) : (
