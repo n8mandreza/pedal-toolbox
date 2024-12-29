@@ -199,7 +199,7 @@ export default function ImageMigrator() {
             />
 
             <Button 
-                label={`Migrate ${instances.length > 1 ? `${instances.length} instances` : `${instances.length} instance`}`}
+              label={`Migrate ${instances.length > 1 ? `${instances.length} instances` : `${instances.length} instance`}`}
               fullWidth 
               onClick={replaceAspectRatioInstances} 
               variant="primary" 
