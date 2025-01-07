@@ -46,6 +46,7 @@ function Checkbox({label, value, checked = false, description = null, onChange}:
 
 export default function DeviceGenerator() {
   // Store all the device size options to loop over them in the UI
+  // The order they appear in this array is the order they will appear in the UI
   const deviceSizes = [
     { label: '375 x 667', value: 'size375x667', description: 'iPhone SE (3rd Gen)' },
     { label: '375 x 812', value: 'size375x812', description: 'iPhone 11 Pro | 12 mini | 13 mini' },
@@ -59,6 +60,26 @@ export default function DeviceGenerator() {
   ]
 
   const [devices, setDevices] = useState<DeviceOption[]>([]);
+
+  function handleSelectAllChange(event: Event) {
+    const target = event.target as HTMLInputElement;
+    if (target.checked) {
+      setDevices(deviceSizes.map(device => ({ ...device, name: device.value, checked: true })));
+    } else {
+      setDevices([]);
+    }
+  }
+
+  function handleSelectSmallestAndLargestChange(event: Event) {
+    const target = event.target as HTMLInputElement;
+    if (target.checked) {
+      const smallest = deviceSizes[0];
+      const largest = deviceSizes[deviceSizes.length - 1];
+      setDevices([smallest, largest].map(device => ({ ...device, name: device.value, checked: true })));
+    } else {
+      setDevices([]);
+    }
+  }
 
   // Event handler to manage state when a checkbox is toggled
   function handleCheckboxChange(event: Event) {
@@ -103,7 +124,27 @@ export default function DeviceGenerator() {
       <HeaderBar title='Generate device frames' />
 
       <div class="flex flex-col w-full h-full overflow-scroll">
-        <p className='p-4 text-sm text-02'>Select a frame to generate new frames based on the selected devices</p>
+        <p className='p-4 text-sm text-02'>Select a frame to generate new frames based on the selected devices. Only devices that Turo supports are shown.</p>
+
+        <div className='flex flex-col border-t stroke-01 pl-4'>
+          <div className="border-b stroke-01 py-2 pr-4">
+            <Checkbox
+              label="Select all"
+              value="selectAll"
+              checked={devices.length === deviceSizes.length}
+              onChange={handleSelectAllChange}
+            />
+          </div>
+
+          <div className="py-2 pr-4">
+            <Checkbox
+              label="Select smallest and largest"
+              value="selectSmallestAndLargest"
+              checked={devices.length === 2 && devices.some(d => d.name === deviceSizes[0].value) && devices.some(d => d.name === deviceSizes[deviceSizes.length - 1].value)}
+              onChange={handleSelectSmallestAndLargestChange}
+            />
+          </div>
+        </div>
 
         <div className='flex flex-col border-t border-b stroke-01 pl-4'>
           {deviceSizes.map((deviceSize) => (
