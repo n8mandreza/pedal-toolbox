@@ -84,15 +84,17 @@ type DeviceSize = {
   height: number;
 };
 
+// Include any new devices here and in DeviceGenerator.tsx
 const sizes: DeviceSize[] = [
-  { name: 'size414x896', width: 414, height: 896 },
-  { name: 'size375x812', width: 375, height: 812 },
   { name: 'size375x667', width: 375, height: 667 },
+  { name: 'size375x812', width: 375, height: 812 },
   { name: 'size390x844', width: 390, height: 844 },
-  { name: 'size428x926', width: 428, height: 926 },
   { name: 'size393x852', width: 393, height: 852 },
-  { name: 'size430x932', width: 430, height: 932 },
   { name: 'size402x874', width: 402, height: 874 },
+  { name: 'size412x915', width: 412, height: 915 },
+  { name: 'size414x896', width: 414, height: 896 },
+  { name: 'size428x926', width: 428, height: 926 },
+  { name: 'size430x932', width: 430, height: 932 },
   { name: 'size440x956', width: 440, height: 956 },
 ]
 

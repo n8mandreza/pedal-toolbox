@@ -47,15 +47,17 @@ function Checkbox({label, value, checked = false, description = null, onChange}:
 export default function DeviceGenerator() {
   // Store all the device size options to loop over them in the UI
   // The order they appear in this array is the order they will appear in the UI
+  // Include any new devices here and in generatorFunctions.ts
   const deviceSizes = [
     { label: '375 x 667', value: 'size375x667', description: 'iPhone SE (3rd Gen)' },
-    { label: '375 x 812', value: 'size375x812', description: 'iPhone 11 Pro | 12 mini | 13 mini' },
-    { label: '390 x 844', value: 'size390x844', description: 'iPhone 12 | 12 Pro | 13 | 13 Pro | 14' },
-    { label: '393 x 852', value: 'size393x852', description: 'iPhone 14 Pro | 15 | 15 Pro | 16' },
+    { label: '375 x 812', value: 'size375x812', description: 'iPhone 11 Pro, 12 mini, 13 mini' },
+    { label: '390 x 844', value: 'size390x844', description: 'iPhone 12, 12 Pro, 13, 13 Pro, 14' },
+    { label: '393 x 852', value: 'size393x852', description: 'iPhone 14 Pro, 15, 15 Pro, 16' },
     { label: '402 x 874', value: 'size402x874', description: 'iPhone 16 Pro' },
-    { label: '414 x 896', value: 'size414x896', description: 'iPhone XR | 11 | 11 Pro Max' },
-    { label: '428 x 926', value: 'size428x926', description: 'iPhone 12 Pro Max | 13 Pro Max | 14 Plus' },
-    { label: '430 x 932', value: 'size430x932', description: 'iPhone 14 Pro Max | 15 Plus | 15 Pro Max | 16 Plus' },
+    { label: '412 x 917', value: 'size412x915', description: 'Pixel 7 & 8 | Galaxy S23, A12' },
+    { label: '414 x 896', value: 'size414x896', description: 'iPhone XR, 11, 11 Pro Max' },
+    { label: '428 x 926', value: 'size428x926', description: 'iPhone 12 Pro Max, 13 Pro Max, 14 Plus' },
+    { label: '430 x 932', value: 'size430x932', description: 'iPhone 14 Pro Max, 15 Plus, 15 Pro Max, 16 Plus' },
     { label: '440 x 956', value: 'size440x956', description: 'iPhone 16 Pro Max' }
   ]
 
@@ -148,7 +150,7 @@ export default function DeviceGenerator() {
 
         <div className='flex flex-col border-t border-b stroke-01 pl-4'>
           {deviceSizes.map((deviceSize) => (
-            <div className='border-b last:border-none stroke-01 py-2 pr-4'>
+            <div className='border-b last:border-none stroke-01 py-2 pr-4 hover:interactive-stroke-02 hover:opacity-90'>
               <Checkbox
                 label={deviceSize.label}
                 value={deviceSize.value}

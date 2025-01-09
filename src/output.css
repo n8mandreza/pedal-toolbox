@@ -1593,6 +1593,26 @@ video {
   border-color: rgb(65 65 67 / var(--tw-border-opacity));
 }
 
+.group:hover .group-hover\:surface-02 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(244 244 244 / var(--tw-bg-opacity));
+}
+
+.group:hover .group-hover\:surface-02:is(.figma-dark *) {
+  --tw-bg-opacity: 1;
+  background-color: rgb(42 42 44 / var(--tw-bg-opacity));
+}
+
+.group:hover .group-hover\:interactive-stroke-02 {
+  --tw-border-opacity: 1;
+  border-color: rgb(208 208 208 / var(--tw-border-opacity));
+}
+
+.group:hover .group-hover\:interactive-stroke-02:is(.figma-dark *) {
+  --tw-border-opacity: 1;
+  border-color: rgb(65 65 67 / var(--tw-border-opacity));
+}
+
 .last\:border-none:last-child {
   border-style: none;
 }
