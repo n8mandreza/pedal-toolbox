@@ -62,14 +62,14 @@ function Plugin () {
   
   return (
     <div class="w-screen h-screen flex body overflow-y-scroll text-base screen-01 text-01">
-      <div class="flex flex-col justify-between flex-shrink-0 w-48 px-2 py-2 overflow-scroll border-r border-solid surface-sticky stroke-01">
+      <div class="flex flex-col justify-between flex-shrink-0 w-48 px-2 py-2 overflow-scroll border-r border-solid surface-sticky stroke-01 h-screen">
         <div class="flex flex-col gap-2">
           <div class="flex flex-col">
             <TabItem label='Linter' badge='beta' selected={currentView === 'linter'} onClick={() => handleViewChange('linter')} />
           </div>
 
           <div class="flex flex-col">
-            <p class="text-03 label-s p-2">Generators</p>
+            <p class="text-03 label-s py-2 px-1">Generators</p>
             {/* <TabItem label='Vehicles' selected={currentView === 'vehicleImageGenerator'} onClick={() => handleViewChange('vehicleImageGenerator')} /> */}
             <TabItem label='Devices' badge='new' selected={currentView === 'devices'} onClick={() => handleViewChange('devices')} />
           </div>
