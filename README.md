@@ -26,6 +26,10 @@ This plugin features a few categories of utilities:
   - Date
   - Number
   - Time
+- Miscellaneous
+  - Linter
+
+#### Adding a new utility
 
 All components and views are in the `components` folder. Each view is a modular component, 
 meaning any time a new view is added, there are 2 steps to make it accessible within the plugin's navigation:
