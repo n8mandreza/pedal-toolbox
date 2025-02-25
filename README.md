@@ -13,7 +13,7 @@ of locale and style options.
 
 ### Features
 
-This plugin features a few categories of utilities:
+Pedal Toolbox features a few categories of utilities:
 
 - Generators
   - Device sizes
@@ -29,13 +29,15 @@ This plugin features a few categories of utilities:
 - Miscellaneous
   - Linter
 
-#### Adding a new utility
+### Adding a new utility
 
 All components and views are in the `components` folder. Each view is a modular component, 
 meaning any time a new view is added, there are 2 steps to make it accessible within the plugin's navigation:
 
 1. Add it to the "sidebar" navigation menu in `ui.tsx` as a `TabItem`
 2. Add a case to the `renderView` function in `ui.tsx` to render the corresponding view
+
+## Getting started
 
 ### Pre-requisites
 
