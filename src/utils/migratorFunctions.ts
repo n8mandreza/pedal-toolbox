@@ -6,7 +6,7 @@ import { InstanceSwapProps } from "../types";
 export async function findComponentSetInstances(componentSetKey: string): Promise<any[]> {
   const instances: any[] = [];
 
-  // Traverse the node tree and collect instances of the specified component set
+  // Function to traverse the node tree and collect instances of the specified component set
   async function traverse(node: SceneNode | PageNode) {
     if ("children" in node) {
       // Wait for all children to be processed
