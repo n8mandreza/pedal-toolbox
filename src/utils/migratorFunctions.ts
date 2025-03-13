@@ -2,19 +2,24 @@ import { emit } from "@create-figma-plugin/utilities";
 import { InstanceSwapProps } from "../types";
 
 // Find instances of the specified component set and collect detailed information
-// A component set is a special type of node that contains multiple variants
+// 'COMPONENT_SET' is a special type of node that contains multiple variants
 export async function findComponentSetInstances(componentSetKey: string): Promise<any[]> {
   const instances: any[] = [];
 
   // Function to traverse the node tree and collect instances of the specified component set
   async function traverse(node: SceneNode | PageNode) {
+    // Recursively traverse children
     if ("children" in node) {
       // Wait for all children to be processed
       await Promise.all(node.children.map(child => traverse(child)));
     }
+    // Check if the node is an instance of the specified component set
     if (node.type === "INSTANCE") {
       try {
+        // Get the main component of the instance
         const mainComponent = await node.getMainComponentAsync();
+
+        // Check if the main component is a part of the specified component set
         if (mainComponent && mainComponent.parent &&
           mainComponent.parent.type === "COMPONENT_SET" &&
           mainComponent.parent.key === componentSetKey) {
@@ -22,7 +27,9 @@ export async function findComponentSetInstances(componentSetKey: string): Promis
             id: node.id,
             name: node.name,
             type: node.type,
-            componentProperties: node.componentProperties
+            componentProperties: node.componentProperties,
+            layoutSizingHorizontal: node.layoutSizingHorizontal,
+            layoutSizingVertical: node.layoutSizingVertical
           });
         }
       } catch (error) {
